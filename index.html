@@ -9,12 +9,42 @@
 </head>
 <body class="bg-gray-100 p-4">
     <div id="app" class="max-w-md mx-auto bg-white p-6 rounded-lg shadow-md">
-        <h1 class="text-xl font-bold mb-4 text-center">ส่งข้อความและบันทึกใน Google Sheet</h1>
+        <h1 class="text-xl font-bold mb-4 text-center">ส่งข้อความ 3 ข้อความพร้อมกัน</h1>
         <div id="loading" class="text-center text-gray-600">กำลังโหลด LIFF...</div>
         <form id="messageForm" class="space-y-6 hidden">
             <div id="messageBlocks">
                 <div class="border p-4 rounded-md message-block">
-                    <label class="block text-sm font-medium text-gray-700">ประเภทข้อความ</label>
+                    <label class="block text-sm font-medium text-gray-700">ข้อความ 1</label>
+                    <select class="msg-type w-full p-2 border rounded-md mb-2" onchange="updateFields(this)">
+                        <option value="TEXT">ข้อความ (Text)</option>
+                        <option value="FLEX">Flex Message</option>
+                        <option value="VIDEO">วิดีโอ (Video)</option>
+                        <option value="TEMPLATE">เทมเพลต (Template)</option>
+                        <option value="IMAGE">รูปภาพ (Image)</option>
+                        <option value="IMAGEMAP">Imagemap</option>
+                        <option value="AUDIO">เสียง (Audio)</option>
+                        <option value="STICKER">สติกเกอร์ (Sticker)</option>
+                        <option value="LOCATION">ตำแหน่ง (Location)</option>
+                    </select>
+                    <div class="fields space-y-2"></div>
+                </div>
+                <div class="border p-4 rounded-md message-block">
+                    <label class="block text-sm font-medium text-gray-700">ข้อความ 2</label>
+                    <select class="msg-type w-full p-2 border rounded-md mb-2" onchange="updateFields(this)">
+                        <option value="TEXT">ข้อความ (Text)</option>
+                        <option value="FLEX">Flex Message</option>
+                        <option value="VIDEO">วิดีโอ (Video)</option>
+                        <option value="TEMPLATE">เทมเพลต (Template)</option>
+                        <option value="IMAGE">รูปภาพ (Image)</option>
+                        <option value="IMAGEMAP">Imagemap</option>
+                        <option value="AUDIO">เสียง (Audio)</option>
+                        <option value="STICKER">สติกเกอร์ (Sticker)</option>
+                        <option value="LOCATION">ตำแหน่ง (Location)</option>
+                    </select>
+                    <div class="fields space-y-2"></div>
+                </div>
+                <div class="border p-4 rounded-md message-block">
+                    <label class="block text-sm font-medium text-gray-700">ข้อความ 3</label>
                     <select class="msg-type w-full p-2 border rounded-md mb-2" onchange="updateFields(this)">
                         <option value="TEXT">ข้อความ (Text)</option>
                         <option value="FLEX">Flex Message</option>
@@ -29,15 +59,6 @@
                     <div class="fields space-y-2"></div>
                 </div>
             </div>
-            <button type="button" id="addMessage" class="w-full bg-green-500 text-white p-2 rounded-md hover:bg-green-600">เพิ่มข้อความ (สูงสุด 3)</button>
-            <div>
-                <label class="block text-sm font-medium text-gray-700 mb-2">เลือกจำนวนข้อความที่จะส่ง</label>
-                <select id="msgCount" class="w-full p-2 border rounded-md">
-                    <option value="1">ส่ง 1 ข้อความ</option>
-                    <option value="2">ส่ง 2 ข้อความ</option>
-                    <option value="3">ส่ง 3 ข้อความ</option>
-                </select>
-            </div>
             <button type="submit" class="w-full bg-blue-500 text-white p-2 rounded-md hover:bg-blue-600">ส่งและบันทึก</button>
         </form>
         <p id="status" class="mt-4 text-center text-gray-600"></p>
@@ -49,16 +70,16 @@
         const form = document.getElementById('messageForm');
         const status = document.getElementById('status');
         const messageBlocks = document.getElementById('messageBlocks');
-        let blockCount = 1;
 
         // เริ่มต้น LIFF
         liff.init({
-            liffId: '2005780370-zjBDd5aK' // แทนที่ด้วย LIFF ID ของคุณ
+            liffId: '2005780370-zjBDd5aK' // ใช้ LIFF ID ที่คุณให้มา
         })
         .then(() => {
             loading.classList.add('hidden');
             form.classList.remove('hidden');
-            updateFields(messageBlocks.querySelector('.msg-type'));
+            // โหลดฟิลด์เริ่มต้นสำหรับทั้ง 3 ข้อความ
+            messageBlocks.querySelectorAll('.msg-type').forEach(updateFields);
             status.textContent = liff.isInClient() ? 'พร้อมใช้งานใน LINE App' : 'เปิดในเบราว์เซอร์ (ส่งข้อความได้เฉพาะใน LINE App)';
         })
         .catch((err) => {
@@ -105,25 +126,12 @@
             }
         }
 
-        document.getElementById('addMessage').addEventListener('click', () => {
-            if (blockCount < 3) {
-                blockCount++;
-                const newBlock = messageBlocks.children[0].cloneNode(true);
-                newBlock.querySelector('.fields').innerHTML = '';
-                updateFields(newBlock.querySelector('.msg-type'));
-                messageBlocks.appendChild(newBlock);
-                document.getElementById('msgCount').value = blockCount;
-            }
-        });
-
         form.addEventListener('submit', function(e) {
             e.preventDefault();
             const blocks = messageBlocks.querySelectorAll('.message-block');
-            const msgCount = parseInt(document.getElementById('msgCount').value);
             const messages = [];
 
-            blocks.forEach((block, index) => {
-                if (index >= msgCount) return;
+            blocks.forEach((block) => {
                 const type = block.querySelector('.msg-type').value;
                 const content = block.querySelector('.content')?.value || '';
                 const preview = block.querySelector('.preview')?.value || '';
@@ -133,37 +141,37 @@
                 let msgToBot = {};
                 switch (type) {
                     case "TEXT":
-                        msgToBot = { type: "text", text: content };
+                        if (content) msgToBot = { type: "text", text: content };
                         break;
                     case "FLEX":
-                        msgToBot = { type: "flex", altText: "This is a Flex Message", contents: JSON.parse(content) };
+                        if (content) msgToBot = { type: "flex", altText: "This is a Flex Message", contents: JSON.parse(content) };
                         break;
                     case "VIDEO":
-                        msgToBot = { type: "video", originalContentUrl: content, previewImageUrl: preview };
+                        if (content && preview) msgToBot = { type: "video", originalContentUrl: content, previewImageUrl: preview };
                         break;
                     case "TEMPLATE":
-                        msgToBot = JSON.parse(content);
+                        if (content) msgToBot = JSON.parse(content);
                         break;
                     case "IMAGE":
-                        msgToBot = { type: "image", originalContentUrl: content, previewImageUrl: preview };
+                        if (content && preview) msgToBot = { type: "image", originalContentUrl: content, previewImageUrl: preview };
                         break;
                     case "IMAGEMAP":
-                        msgToBot = JSON.parse(content);
+                        if (content) msgToBot = JSON.parse(content);
                         break;
                     case "AUDIO":
-                        msgToBot = { type: "audio", originalContentUrl: content, duration: parseInt(preview) };
+                        if (content && preview) msgToBot = { type: "audio", originalContentUrl: content, duration: parseInt(preview) };
                         break;
                     case "STICKER":
-                        msgToBot = { type: "sticker", packageId: content, stickerId: preview };
+                        if (content && preview) msgToBot = { type: "sticker", packageId: content, stickerId: preview };
                         break;
                     case "LOCATION":
-                        msgToBot = { type: "location", title: locName, address: address, latitude: parseFloat(content), longitude: parseFloat(preview) };
+                        if (locName && address && content && preview) msgToBot = { type: "location", title: locName, address: address, latitude: parseFloat(content), longitude: parseFloat(preview) };
                         break;
                 }
                 if (Object.keys(msgToBot).length) messages.push(msgToBot);
             });
 
-            if (!messages.length) {
+            if (messages.length === 0) {
                 status.textContent = "กรุณากรอกข้อมูลอย่างน้อย 1 ข้อความ";
                 return;
             }
@@ -172,7 +180,7 @@
 
             // ส่งข้อความผ่าน LIFF (ถ้าเปิดใน LINE App)
             if (liff.isInClient()) {
-                liff.sendMessages(messages)
+                liff.sendMessages(messages.slice(0, 3)) // ส่งสูงสุด 3 ข้อความ
                     .then(() => {
                         status.textContent = "ส่งข้อความสำเร็จ กำลังบันทึก...";
                         saveToGoogleSheet(messages);
@@ -190,7 +198,7 @@
         // ฟังก์ชัน AJAX เพื่อบันทึกข้อมูลลง Google Sheet
         function saveToGoogleSheet(messages) {
             const xhr = new XMLHttpRequest();
-            xhr.open('POST', 'https://script.google.com/macros/s/AKfycbywtRY5r6XkmULD16ej1_soiVi6iF2wANg8h9sAG-secU1FDmmJCnM60Q0yw5jVIqY8/exec', true); // แทนที่ด้วย URL จาก Google Apps Script
+            xhr.open('POST', 'https://script.google.com/macros/s/AKfycbywtRY5r6XkmULD16ej1_soiVi6iF2wANg8h9sAG-secU1FDmmJCnM60Q0yw5jVIqY8/exec', true);
             xhr.setRequestHeader('Content-Type', 'application/json');
             xhr.onreadystatechange = function() {
                 if (xhr.readyState === 4) {
@@ -199,7 +207,7 @@
                         if (result.status === 'success') {
                             status.textContent = "บันทึกข้อมูลลง Google Sheet เรียบร้อย";
                             form.reset();
-                            updateFields(messageBlocks.querySelector('.msg-type'));
+                            messageBlocks.querySelectorAll('.msg-type').forEach(updateFields);
                         } else {
                             status.textContent = "เกิดข้อผิดพลาดในการบันทึก: " + result.message;
                         }
