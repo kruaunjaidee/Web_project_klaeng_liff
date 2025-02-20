@@ -3,13 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>LIFF - ส่งข้อความหลากหลายประเภท</title>
+    <title>LIFF - ส่งข้อความและบันทึกใน Google Sheet</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
 </head>
 <body class="bg-gray-100 p-4">
     <div id="app" class="max-w-md mx-auto bg-white p-6 rounded-lg shadow-md">
-        <h1 class="text-xl font-bold mb-4 text-center">ส่งข้อความหลากหลายประเภท</h1>
+        <h1 class="text-xl font-bold mb-4 text-center">ส่งข้อความและบันทึกใน Google Sheet</h1>
         <div id="loading" class="text-center text-gray-600">กำลังโหลด LIFF...</div>
         <form id="messageForm" class="space-y-6 hidden">
             <div id="messageBlocks">
@@ -38,7 +38,7 @@
                     <option value="3">ส่ง 3 ข้อความ</option>
                 </select>
             </div>
-            <button type="submit" class="w-full bg-blue-500 text-white p-2 rounded-md hover:bg-blue-600">ส่งข้อความ</button>
+            <button type="submit" class="w-full bg-blue-500 text-white p-2 rounded-md hover:bg-blue-600">ส่งและบันทึก</button>
         </form>
         <p id="status" class="mt-4 text-center text-gray-600"></p>
     </div>
@@ -51,30 +51,21 @@
         const messageBlocks = document.getElementById('messageBlocks');
         let blockCount = 1;
 
-        // ฟังก์ชันเริ่มต้น LIFF
+        // เริ่มต้น LIFF
         liff.init({
             liffId: '2005780370-zjBDd5aK' // แทนที่ด้วย LIFF ID ของคุณ
         })
         .then(() => {
-            loading.textContent = 'LIFF โหลดสำเร็จ กำลังตรวจสอบสภาพแวดล้อม...';
-            if (!liff.isInClient()) {
-                loading.classList.add('hidden');
-                status.textContent = 'กรุณาเปิดใน LINE App เท่านั้น (ใช้ line://app/YOUR_LIFF_ID)';
-                if (!liff.isLoggedIn()) {
-                    status.textContent += ' กำลังพยายามล็อกอิน...';
-                    liff.login(); // จะ redirect ไป LINE Login หากไม่อยู่ใน LINE App
-                }
-            } else {
-                loading.classList.add('hidden');
-                form.classList.remove('hidden');
-                updateFields(messageBlocks.querySelector('.msg-type'));
-                status.textContent = 'พร้อมใช้งานใน LINE App';
-            }
+            loading.classList.add('hidden');
+            form.classList.remove('hidden');
+            updateFields(messageBlocks.querySelector('.msg-type'));
+            status.textContent = liff.isInClient() ? 'พร้อมใช้งานใน LINE App' : 'เปิดในเบราว์เซอร์ (ส่งข้อความได้เฉพาะใน LINE App)';
         })
         .catch((err) => {
             loading.classList.add('hidden');
             status.textContent = `เกิดข้อผิดพลาดในการโหลด LIFF: ${err.code} - ${err.message}`;
             console.log('LIFF Error:', err.code, err.message);
+            form.classList.remove('hidden'); // ยังให้ใช้งานในเบราว์เซอร์ได้ แต่ส่งข้อความไม่ได้
         });
 
         function updateFields(select) {
@@ -125,13 +116,8 @@
             }
         });
 
-        form.addEventListener('submit', async (e) => {
+        form.addEventListener('submit', function(e) {
             e.preventDefault();
-            if (!liff.isInClient()) {
-                status.textContent = 'ส่งข้อความได้เฉพาะใน LINE App เท่านั้น';
-                return;
-            }
-
             const blocks = messageBlocks.querySelectorAll('.message-block');
             const msgCount = parseInt(document.getElementById('msgCount').value);
             const messages = [];
@@ -182,31 +168,48 @@
                 return;
             }
 
-            status.textContent = "กำลังส่ง...";
-            try {
-                // ส่งข้อความผ่าน LIFF
-                await liff.sendMessages(messages);
+            status.textContent = "กำลังดำเนินการ...";
 
-                // บันทึกข้อมูลลง Google Sheet
-                const response = await fetch('https://script.google.com/macros/s/AKfycbywtRY5r6XkmULD16ej1_soiVi6iF2wANg8h9sAG-secU1FDmmJCnM60Q0yw5jVIqY8/exec', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ messages })
-                });
-
-                const result = await response.json();
-                if (result.status === 'success') {
-                    status.textContent = "ส่งข้อความเรียบร้อยและบันทึกใน Google Sheet";
-                    form.reset();
-                    updateFields(messageBlocks.querySelector('.msg-type'));
-                } else {
-                    status.textContent = "เกิดข้อผิดพลาดในการบันทึก: " + result.message;
-                }
-            } catch (error) {
-                status.textContent = "เกิดข้อผิดพลาด: " + error.message;
-                console.log('Error:', error);
+            // ส่งข้อความผ่าน LIFF (ถ้าเปิดใน LINE App)
+            if (liff.isInClient()) {
+                liff.sendMessages(messages)
+                    .then(() => {
+                        status.textContent = "ส่งข้อความสำเร็จ กำลังบันทึก...";
+                        saveToGoogleSheet(messages);
+                    })
+                    .catch((error) => {
+                        status.textContent = "เกิดข้อผิดพลาดในการส่งข้อความ: " + error.message;
+                        console.log('LIFF Send Error:', error);
+                    });
+            } else {
+                status.textContent = "ไม่ได้เปิดใน LINE App ข้ามการส่งข้อความ กำลังบันทึก...";
+                saveToGoogleSheet(messages);
             }
         });
+
+        // ฟังก์ชัน AJAX เพื่อบันทึกข้อมูลลง Google Sheet
+        function saveToGoogleSheet(messages) {
+            const xhr = new XMLHttpRequest();
+            xhr.open('POST', 'https://script.google.com/macros/s/AKfycbywtRY5r6XkmULD16ej1_soiVi6iF2wANg8h9sAG-secU1FDmmJCnM60Q0yw5jVIqY8/exec', true); // แทนที่ด้วย URL จาก Google Apps Script
+            xhr.setRequestHeader('Content-Type', 'application/json');
+            xhr.onreadystatechange = function() {
+                if (xhr.readyState === 4) {
+                    if (xhr.status === 200) {
+                        const result = JSON.parse(xhr.responseText);
+                        if (result.status === 'success') {
+                            status.textContent = "บันทึกข้อมูลลง Google Sheet เรียบร้อย";
+                            form.reset();
+                            updateFields(messageBlocks.querySelector('.msg-type'));
+                        } else {
+                            status.textContent = "เกิดข้อผิดพลาดในการบันทึก: " + result.message;
+                        }
+                    } else {
+                        status.textContent = "เกิดข้อผิดพลาดในการเชื่อมต่อ: " + xhr.statusText;
+                    }
+                }
+            };
+            xhr.send(JSON.stringify({ messages }));
+        }
     </script>
 </body>
 </html>
