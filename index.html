@@ -59,6 +59,7 @@
                     <div class="fields space-y-2"></div>
                 </div>
             </div>
+            <button type="button" id="shareTargetPicker" class="w-full bg-yellow-500 text-white p-2 rounded-md hover:bg-yellow-600 mb-2">เลือกไฟล์จาก Share Target</button>
             <button type="submit" class="w-full bg-blue-500 text-white p-2 rounded-md hover:bg-blue-600">ส่งและบันทึก</button>
         </form>
         <p id="status" class="mt-4 text-center text-gray-600"></p>
@@ -70,10 +71,11 @@
         const form = document.getElementById('messageForm');
         const status = document.getElementById('status');
         const messageBlocks = document.getElementById('messageBlocks');
+        let currentBlockIndex = 0;
 
         // เริ่มต้น LIFF
         liff.init({
-            liffId: '2005780370-zjBDd5aK' // LIFF ID ที่คุณให้มา
+            liffId: '2005780370-zjBDd5aK'
         })
         .then(() => {
             loading.classList.add('hidden');
@@ -102,7 +104,7 @@
                     fields.innerHTML = '<textarea class="content w-full p-2 border rounded-md" placeholder="JSON ของ Flex Message"></textarea>';
                     break;
                 case 'VIDEO':
-                    fields.innerHTML = '<input type="text" class="content w-full p-2 border rounded-md" placeholder="Google Drive File ID วิดีโอ"><input type="text" class="preview w-full p-2 border rounded-md" placeholder="Google Drive File ID ภาพตัวอย่าง">';
+                    fields.innerHTML = '<input type="text" class="content w-full p-2 border rounded-md" placeholder="URL วิดีโอ หรือ Google Drive File ID"><input type="text" class="preview w-full p-2 border rounded-md" placeholder="URL ภาพตัวอย่าง หรือ File ID">';
                     break;
                 case 'TEMPLATE':
                     fields.innerHTML = '<textarea class="content w-full p-2 border rounded-md" placeholder="JSON ของ Template"></textarea>';
@@ -114,7 +116,7 @@
                     fields.innerHTML = '<textarea class="content w-full p-2 border rounded-md" placeholder="JSON ของ Imagemap"></textarea>';
                     break;
                 case 'AUDIO':
-                    fields.innerHTML = '<input type="text" class="content w-full p-2 border rounded-md" placeholder="Google Drive File ID เสียง"><input type="number" class="preview w-full p-2 border rounded-md" placeholder="ระยะเวลา (มิลลิวินาที)">';
+                    fields.innerHTML = '<input type="text" class="content w-full p-2 border rounded-md" placeholder="URL เสียง หรือ Google Drive File ID"><input type="number" class="preview w-full p-2 border rounded-md" placeholder="ระยะเวลา (มิลลิวินาที)">';
                     break;
                 case 'STICKER':
                     fields.innerHTML = '<input type="text" class="content w-full p-2 border rounded-md" placeholder="Package ID"><input type="text" class="preview w-full p-2 border rounded-md" placeholder="Sticker ID">';
@@ -124,6 +126,63 @@
                     break;
             }
         }
+
+        // ฟังก์ชันดึง File ID จาก Google Drive URL
+        function extractFileId(url) {
+            const match = url.match(/\/d\/([a-zA-Z0-9_-]+)/);
+            return match ? match[1] : null;
+        }
+
+        // ฟังก์ชันตรวจสอบและแปลง URL
+        function processUrl(input, type) {
+            if (!input) return '';
+            // ถ้าเป็น Google Drive URL ให้ดึง File ID และแปลง
+            if (input.includes('drive.google.com')) {
+                const fileId = extractFileId(input);
+                return fileId ? `https://lh3.googleusercontent.com/d/${fileId}` : input;
+            }
+            // ถ้าเป็น URL ตรง ให้ส่งไปそのまま
+            return input;
+        }
+
+        // Share Target Picker
+        document.getElementById('shareTargetPicker').addEventListener('click', () => {
+            if (!liff.isInClient()) {
+                status.textContent = "Share Target Picker ใช้ได้เฉพาะใน LINE App";
+                return;
+            }
+
+            liff.shareTargetPicker([
+                { type: "text", text: "เลือกไฟล์จาก Google Drive เพื่อใส่ในช่องข้อความ" }
+            ])
+            .then((result) => {
+                if (result) {
+                    const sharedText = result[0]?.text || '';
+                    const fileId = extractFileId(sharedText) || sharedText; // ถ้าไม่ใช่ Google Drive ใช้ข้อความตรงๆ
+                    if (fileId) {
+                        const blocks = messageBlocks.querySelectorAll('.message-block');
+                        const currentBlock = blocks[currentBlockIndex];
+                        const type = currentBlock.querySelector('.msg-type').value;
+
+                        if (['VIDEO', 'IMAGE', 'AUDIO'].includes(type)) {
+                            const contentField = currentBlock.querySelector('.content');
+                            contentField.value = fileId;
+                            status.textContent = `ใส่ข้อมูล: ${fileId} ในข้อความ ${currentBlockIndex + 1}`;
+                        } else {
+                            status.textContent = "กรุณาเลือกประเภท VIDEO, IMAGE หรือ AUDIO ก่อนใช้ Share Target";
+                        }
+
+                        currentBlockIndex = (currentBlockIndex + 1) % 3;
+                    } else {
+                        status.textContent = "ไม่พบ File ID หรือ URL ที่ถูกต้องในลิงก์ที่แชร์";
+                    }
+                }
+            })
+            .catch((error) => {
+                status.textContent = "เกิดข้อผิดพลาดใน Share Target Picker: " + error.message;
+                console.log('Share Target Error:', error);
+            });
+        });
 
         form.addEventListener('submit', function(e) {
             e.preventDefault();
@@ -150,8 +209,8 @@
                     case "VIDEO":
                         if (content && preview) msgToBot = { 
                             type: "video", 
-                            originalContentUrl: `https://lh3.googleusercontent.com/d/${content}`, 
-                            previewImageUrl: `https://lh3.googleusercontent.com/d/${preview}` 
+                            originalContentUrl: processUrl(content, 'VIDEO'), 
+                            previewImageUrl: processUrl(preview, 'IMAGE') 
                         };
                         break;
                     case "TEMPLATE":
@@ -160,8 +219,8 @@
                     case "IMAGE":
                         if (content && preview) msgToBot = { 
                             type: "image", 
-                            originalContentUrl: `https://lh3.googleusercontent.com/d/${content}`, 
-                            previewImageUrl: `https://lh3.googleusercontent.com/d/${preview}` 
+                            originalContentUrl: processUrl(content, 'IMAGE'), 
+                            previewImageUrl: processUrl(preview, 'IMAGE') 
                         };
                         break;
                     case "IMAGEMAP":
@@ -170,7 +229,7 @@
                     case "AUDIO":
                         if (content && preview) msgToBot = { 
                             type: "audio", 
-                            originalContentUrl: `https://lh3.googleusercontent.com/d/${content}`, 
+                            originalContentUrl: processUrl(content, 'AUDIO'), 
                             duration: parseInt(preview) 
                         };
                         break;
@@ -199,7 +258,7 @@
 
             // ส่งข้อความผ่าน LIFF (ถ้าเปิดใน LINE App)
             if (liff.isInClient()) {
-                liff.sendMessages(messages.slice(0, 3)) // ส่งสูงสุด 3 ข้อความ
+                liff.sendMessages(messages.slice(0, 3))
                     .then(() => {
                         status.textContent = "ส่งข้อความสำเร็จ กำลังบันทึก...";
                         saveToGoogleSheet(messages);
