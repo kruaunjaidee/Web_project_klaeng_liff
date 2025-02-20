@@ -73,12 +73,11 @@
 
         // เริ่มต้น LIFF
         liff.init({
-            liffId: '2005780370-zjBDd5aK' // ใช้ LIFF ID ที่คุณให้มา
+            liffId: '2005780370-zjBDd5aK' // LIFF ID ที่คุณให้มา
         })
         .then(() => {
             loading.classList.add('hidden');
             form.classList.remove('hidden');
-            // โหลดฟิลด์เริ่มต้นสำหรับทั้ง 3 ข้อความ
             messageBlocks.querySelectorAll('.msg-type').forEach(updateFields);
             status.textContent = liff.isInClient() ? 'พร้อมใช้งานใน LINE App' : 'เปิดในเบราว์เซอร์ (ส่งข้อความได้เฉพาะใน LINE App)';
         })
@@ -86,7 +85,7 @@
             loading.classList.add('hidden');
             status.textContent = `เกิดข้อผิดพลาดในการโหลด LIFF: ${err.code} - ${err.message}`;
             console.log('LIFF Error:', err.code, err.message);
-            form.classList.remove('hidden'); // ยังให้ใช้งานในเบราว์เซอร์ได้ แต่ส่งข้อความไม่ได้
+            form.classList.remove('hidden');
         });
 
         function updateFields(select) {
@@ -103,25 +102,25 @@
                     fields.innerHTML = '<textarea class="content w-full p-2 border rounded-md" placeholder="JSON ของ Flex Message"></textarea>';
                     break;
                 case 'VIDEO':
-                    fields.innerHTML = '<input type="url" class="content w-full p-2 border rounded-md" placeholder="URL วิดีโอ"><input type="url" class="preview w-full p-2 border rounded-md" placeholder="URL ภาพตัวอย่าง">';
+                    fields.innerHTML = '<input type="text" class="content w-full p-2 border rounded-md" placeholder="Google Drive File ID วิดีโอ"><input type="text" class="preview w-full p-2 border rounded-md" placeholder="Google Drive File ID ภาพตัวอย่าง">';
                     break;
                 case 'TEMPLATE':
                     fields.innerHTML = '<textarea class="content w-full p-2 border rounded-md" placeholder="JSON ของ Template"></textarea>';
                     break;
                 case 'IMAGE':
-                    fields.innerHTML = '<input type="url" class="content w-full p-2 border rounded-md" placeholder="URL รูปภาพ"><input type="url" class="preview w-full p-2 border rounded-md" placeholder="URL ภาพตัวอย่าง">';
+                    fields.innerHTML = '<input type="text" class="content w-full p-2 border rounded-md" placeholder="Google Drive File ID รูปภาพ"><input type="text" class="preview w-full p-2 border rounded-md" placeholder="Google Drive File ID ภาพตัวอย่าง">';
                     break;
                 case 'IMAGEMAP':
                     fields.innerHTML = '<textarea class="content w-full p-2 border rounded-md" placeholder="JSON ของ Imagemap"></textarea>';
                     break;
                 case 'AUDIO':
-                    fields.innerHTML = '<input type="url" class="content w-full p-2 border rounded-md" placeholder="URL เสียง"><input type="number" class="preview w-full p-2 border rounded-md" placeholder="ระยะเวลา (มิลลิวินาที)">';
+                    fields.innerHTML = '<input type="text" class="content w-full p-2 border rounded-md" placeholder="Google Drive File ID เสียง"><input type="number" class="preview w-full p-2 border rounded-md" placeholder="ระยะเวลา (มิลลิวินาที)">';
                     break;
                 case 'STICKER':
                     fields.innerHTML = '<input type="text" class="content w-full p-2 border rounded-md" placeholder="Package ID"><input type="text" class="preview w-full p-2 border rounded-md" placeholder="Sticker ID">';
                     break;
                 case 'LOCATION':
-                    fields.innerHTML = '<input type="text" class="locName w-full p-2 border rounded-md" placeholder="ชื่อสถานที่"><input type="text" class="address w-full p-2 border rounded-md" placeholder="ที่อยู่"><input type="number" class="content w-full p-2 border rounded-md" placeholder="ละติจูด"><input type="number" class="preview w-full p-2 border rounded-md" placeholder="ลองจิจูด">';
+                    fields.innerHTML = '<input type="text" class="locName w-full p-2 border rounded-md" placeholder="ชื่อสถานที่"><input type="text" class="address w-full p-2 border rounded-md" placeholder="ที่อยู่"><input type="text" class="latitude w-full p-2 border rounded-md" placeholder="ละติจูด"><input type="text" class="longitude w-full p-2 border rounded-md" placeholder="ลองจิจูด">';
                     break;
             }
         }
@@ -137,6 +136,8 @@
                 const preview = block.querySelector('.preview')?.value || '';
                 const locName = block.querySelector('.locName')?.value || '';
                 const address = block.querySelector('.address')?.value || '';
+                const latitude = block.querySelector('.latitude')?.value || '';
+                const longitude = block.querySelector('.longitude')?.value || '';
 
                 let msgToBot = {};
                 switch (type) {
@@ -147,25 +148,43 @@
                         if (content) msgToBot = { type: "flex", altText: "This is a Flex Message", contents: JSON.parse(content) };
                         break;
                     case "VIDEO":
-                        if (content && preview) msgToBot = { type: "video", originalContentUrl: content, previewImageUrl: preview };
+                        if (content && preview) msgToBot = { 
+                            type: "video", 
+                            originalContentUrl: `https://lh3.googleusercontent.com/d/${content}`, 
+                            previewImageUrl: `https://lh3.googleusercontent.com/d/${preview}` 
+                        };
                         break;
                     case "TEMPLATE":
                         if (content) msgToBot = JSON.parse(content);
                         break;
                     case "IMAGE":
-                        if (content && preview) msgToBot = { type: "image", originalContentUrl: content, previewImageUrl: preview };
+                        if (content && preview) msgToBot = { 
+                            type: "image", 
+                            originalContentUrl: `https://lh3.googleusercontent.com/d/${content}`, 
+                            previewImageUrl: `https://lh3.googleusercontent.com/d/${preview}` 
+                        };
                         break;
                     case "IMAGEMAP":
                         if (content) msgToBot = JSON.parse(content);
                         break;
                     case "AUDIO":
-                        if (content && preview) msgToBot = { type: "audio", originalContentUrl: content, duration: parseInt(preview) };
+                        if (content && preview) msgToBot = { 
+                            type: "audio", 
+                            originalContentUrl: `https://lh3.googleusercontent.com/d/${content}`, 
+                            duration: parseInt(preview) 
+                        };
                         break;
                     case "STICKER":
                         if (content && preview) msgToBot = { type: "sticker", packageId: content, stickerId: preview };
                         break;
                     case "LOCATION":
-                        if (locName && address && content && preview) msgToBot = { type: "location", title: locName, address: address, latitude: parseFloat(content), longitude: parseFloat(preview) };
+                        if (locName && address && latitude && longitude) msgToBot = { 
+                            type: "location", 
+                            title: locName, 
+                            address: address, 
+                            latitude: parseFloat(latitude), 
+                            longitude: parseFloat(longitude) 
+                        };
                         break;
                 }
                 if (Object.keys(msgToBot).length) messages.push(msgToBot);
