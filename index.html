@@ -10,84 +10,24 @@
 </head>
 <body class="bg-gray-100 p-4">
     <div id="app" class="max-w-md mx-auto bg-white p-6 rounded-lg shadow-md">
-        <h1 class="text-xl font-bold mb-4 text-center">ส่งข้อความ 5 ข้อความพร้อมกัน</h1>
-        <div id="loading" class="text-center text-gray-600">กำลังโหลด LIFF...</div>
+        <h1 class="text-xl font-bold mb-4 text-center">ส่งข้อความ 2 ข้อความพร้อมกัน</h1>
+        <div id="loading" class="text-center text-gray-600">กำลังโหลด...</div>
         <form id="messageForm" class="space-y-6 hidden">
             <div id="messageBlocks">
                 <div class="border p-4 rounded-md message-block">
-                    <label class="block text-sm font-medium text-gray-700">ข้อความ 1</label>
-                    <select class="msg-type w-full p-2 border rounded-md mb-2" onchange="updateFields(this)">
-                        <option value="TEXT">ข้อความ (Text)</option>
-                        <option value="FLEX">Flex Message</option>
-                        <option value="VIDEO">วิดีโอ (Video)</option>
-                        <option value="TEMPLATE">เทมเพลต (Template)</option>
-                        <option value="IMAGE">รูปภาพ (Image)</option>
-                        <option value="IMAGEMAP">Imagemap</option>
-                        <option value="AUDIO">เสียง (Audio)</option>
-                        <option value="STICKER">สติกเกอร์ (Sticker)</option>
-                        <option value="LOCATION">ตำแหน่ง (Location)</option>
-                    </select>
-                    <div class="fields space-y-2"></div>
+                    <label class="block text-sm font-medium text-gray-700">ข้อความ 1 (Text)</label>
+                    <input type="hidden" class="msg-type" value="TEXT">
+                    <div class="fields space-y-2">
+                        <textarea class="content w-full p-2 border rounded-md" placeholder="พิมพ์ข้อความ"></textarea>
+                    </div>
                 </div>
                 <div class="border p-4 rounded-md message-block">
-                    <label class="block text-sm font-medium text-gray-700">ข้อความ 2</label>
-                    <select class="msg-type w-full p-2 border rounded-md mb-2" onchange="updateFields(this)">
-                        <option value="TEXT">ข้อความ (Text)</option>
-                        <option value="FLEX">Flex Message</option>
-                        <option value="VIDEO">วิดีโอ (Video)</option>
-                        <option value="TEMPLATE">เทมเพลต (Template)</option>
-                        <option value="IMAGE">รูปภาพ (Image)</option>
-                        <option value="IMAGEMAP">Imagemap</option>
-                        <option value="AUDIO">เสียง (Audio)</option>
-                        <option value="STICKER">สติกเกอร์ (Sticker)</option>
-                        <option value="LOCATION">ตำแหน่ง (Location)</option>
-                    </select>
-                    <div class="fields space-y-2"></div>
-                </div>
-                <div class="border p-4 rounded-md message-block">
-                    <label class="block text-sm font-medium text-gray-700">ข้อความ 3</label>
-                    <select class="msg-type w-full p-2 border rounded-md mb-2" onchange="updateFields(this)">
-                        <option value="TEXT">ข้อความ (Text)</option>
-                        <option value="FLEX">Flex Message</option>
-                        <option value="VIDEO">วิดีโอ (Video)</option>
-                        <option value="TEMPLATE">เทมเพลต (Template)</option>
-                        <option value="IMAGE">รูปภาพ (Image)</option>
-                        <option value="IMAGEMAP">Imagemap</option>
-                        <option value="AUDIO">เสียง (Audio)</option>
-                        <option value="STICKER">สติกเกอร์ (Sticker)</option>
-                        <option value="LOCATION">ตำแหน่ง (Location)</option>
-                    </select>
-                    <div class="fields space-y-2"></div>
-                </div>
-                <div class="border p-4 rounded-md message-block">
-                    <label class="block text-sm font-medium text-gray-700">ข้อความ 4</label>
-                    <select class="msg-type w-full p-2 border rounded-md mb-2" onchange="updateFields(this)">
-                        <option value="TEXT">ข้อความ (Text)</option>
-                        <option value="FLEX">Flex Message</option>
-                        <option value="VIDEO">วิดีโอ (Video)</option>
-                        <option value="TEMPLATE">เทมเพลต (Template)</option>
-                        <option value="IMAGE">รูปภาพ (Image)</option>
-                        <option value="IMAGEMAP">Imagemap</option>
-                        <option value="AUDIO">เสียง (Audio)</option>
-                        <option value="STICKER">สติกเกอร์ (Sticker)</option>
-                        <option value="LOCATION">ตำแหน่ง (Location)</option>
-                    </select>
-                    <div class="fields space-y-2"></div>
-                </div>
-                <div class="border p-4 rounded-md message-block">
-                    <label class="block text-sm font-medium text-gray-700">ข้อความ 5</label>
-                    <select class="msg-type w-full p-2 border rounded-md mb-2" onchange="updateFields(this)">
-                        <option value="TEXT">ข้อความ (Text)</option>
-                        <option value="FLEX">Flex Message</option>
-                        <option value="VIDEO">วิดีโอ (Video)</option>
-                        <option value="TEMPLATE">เทมเพลต (Template)</option>
-                        <option value="IMAGE">รูปภาพ (Image)</option>
-                        <option value="IMAGEMAP">Imagemap</option>
-                        <option value="AUDIO">เสียง (Audio)</option>
-                        <option value="STICKER">สติกเกอร์ (Sticker)</option>
-                        <option value="LOCATION">ตำแหน่ง (Location)</option>
-                    </select>
-                    <div class="fields space-y-2"></div>
+                    <label class="block text-sm font-medium text-gray-700">ข้อความ 2 (Image)</label>
+                    <input type="hidden" class="msg-type" value="IMAGE">
+                    <div class="fields space-y-2">
+                        <input type="text" class="content w-full p-2 border rounded-md" placeholder="Google Drive File ID รูปภาพ">
+                        <input type="text" class="preview w-full p-2 border rounded-md" placeholder="Google Drive File ID ภาพตัวอย่าง">
+                    </div>
                 </div>
             </div>
             <button type="submit" class="w-full bg-blue-500 text-white p-2 rounded-md hover:bg-blue-600">ส่งข้อความ</button>
@@ -102,58 +42,21 @@
         const status = document.getElementById('status');
         const messageBlocks = document.getElementById('messageBlocks');
 
-        // เริ่มต้น LIFF
+        // เริ่มต้นแอป
         liff.init({
             liffId: '2005780370-zjBDd5aK'
         })
         .then(() => {
             loading.classList.add('hidden');
             form.classList.remove('hidden');
-            messageBlocks.querySelectorAll('.msg-type').forEach(updateFields);
-            status.textContent = liff.isInClient() ? 'พร้อมใช้งานใน LINE App' : 'เปิดในเบราว์เซอร์ (ส่งข้อความได้เฉพาะใน LINE App)';
+            status.textContent = liff.isInClient() ? 'พร้อมใช้งานใน LINE App' : 'ใช้งานในเบราว์เซอร์ (จำลองการส่ง)';
         })
         .catch((err) => {
-            loading.classList.add('hidden');
-            status.textContent = `เกิดข้อผิดพลาดในการโหลด LIFF: ${err.code} - ${err.message}`;
             console.log('LIFF Error:', err.code, err.message);
+            loading.classList.add('hidden');
+            form.classList.remove('hidden');
+            status.textContent = 'ใช้งานในเบราว์เซอร์ (จำลองการส่ง)';
         });
-
-        function updateFields(select) {
-            const block = select.closest('.message-block');
-            const fields = block.querySelector('.fields');
-            const type = select.value;
-            fields.innerHTML = '';
-
-            switch (type) {
-                case 'TEXT':
-                    fields.innerHTML = '<textarea class="content w-full p-2 border rounded-md" placeholder="พิมพ์ข้อความ"></textarea>';
-                    break;
-                case 'FLEX':
-                    fields.innerHTML = '<textarea class="content w-full p-2 border rounded-md" placeholder="JSON ของ Flex Message"></textarea>';
-                    break;
-                case 'VIDEO':
-                    fields.innerHTML = '<input type="text" class="content w-full p-2 border rounded-md" placeholder="URL วิดีโอ หรือ Google Drive File ID"><input type="text" class="preview w-full p-2 border rounded-md" placeholder="URL ภาพตัวอย่าง หรือ File ID">';
-                    break;
-                case 'TEMPLATE':
-                    fields.innerHTML = '<textarea class="content w-full p-2 border rounded-md" placeholder="JSON ของ Template"></textarea>';
-                    break;
-                case 'IMAGE':
-                    fields.innerHTML = '<input type="text" class="content w-full p-2 border rounded-md" placeholder="Google Drive File ID รูปภาพ"><input type="text" class="preview w-full p-2 border rounded-md" placeholder="Google Drive File ID ภาพตัวอย่าง">';
-                    break;
-                case 'IMAGEMAP':
-                    fields.innerHTML = '<textarea class="content w-full p-2 border rounded-md" placeholder="JSON ของ Imagemap"></textarea>';
-                    break;
-                case 'AUDIO':
-                    fields.innerHTML = '<input type="text" class="content w-full p-2 border rounded-md" placeholder="URL เสียง หรือ Google Drive File ID"><input type="number" class="preview w-full p-2 border rounded-md" placeholder="ระยะเวลา (มิลลิวินาที)">';
-                    break;
-                case 'STICKER':
-                    fields.innerHTML = '<input type="text" class="content w-full p-2 border rounded-md" placeholder="Package ID"><input type="text" class="preview w-full p-2 border rounded-md" placeholder="Sticker ID">';
-                    break;
-                case 'LOCATION':
-                    fields.innerHTML = '<input type="text" class="locName w-full p-2 border rounded-md" placeholder="ชื่อสถานที่"><input type="text" class="address w-full p-2 border rounded-md" placeholder="ที่อยู่"><input type="text" class="latitude w-full p-2 border rounded-md" placeholder="ละติจูด"><input type="text" class="longitude w-full p-2 border rounded-md" placeholder="ลองจิจูด">';
-                    break;
-            }
-        }
 
         function processUrl(input, type) {
             if (!input) return '';
@@ -165,67 +68,34 @@
             return input;
         }
 
+        function simulateSendMessages(messages) {
+            return new Promise((resolve) => {
+                setTimeout(() => {
+                    console.log('ข้อความที่จำลองการส่ง:', messages);
+                    resolve();
+                }, 1000);
+            });
+        }
+
         form.addEventListener('submit', function(e) {
             e.preventDefault();
             const blocks = messageBlocks.querySelectorAll('.message-block');
             const messages = [];
 
-            blocks.forEach((block) => {
+            blocks.forEach((block, index) => {
                 const type = block.querySelector('.msg-type').value;
                 const content = block.querySelector('.content')?.value || '';
                 const preview = block.querySelector('.preview')?.value || '';
-                const locName = block.querySelector('.locName')?.value || '';
-                const address = block.querySelector('.address')?.value || '';
-                const latitude = block.querySelector('.latitude')?.value || '';
-                const longitude = block.querySelector('.longitude')?.value || '';
 
                 let msgToBot = {};
-                switch (type) {
-                    case "TEXT":
-                        if (content) msgToBot = { type: "text", text: content };
-                        break;
-                    case "FLEX":
-                        if (content) msgToBot = { type: "flex", altText: "This is a Flex Message", contents: JSON.parse(content) };
-                        break;
-                    case "VIDEO":
-                        if (content && preview) msgToBot = { 
-                            type: "video", 
-                            originalContentUrl: processUrl(content, 'VIDEO'), 
-                            previewImageUrl: processUrl(preview, 'IMAGE') 
-                        };
-                        break;
-                    case "TEMPLATE":
-                        if (content) msgToBot = JSON.parse(content);
-                        break;
-                    case "IMAGE":
-                        if (content && preview) msgToBot = { 
-                            type: "image", 
-                            originalContentUrl: processUrl(content, 'IMAGE'), 
-                            previewImageUrl: processUrl(preview, 'IMAGE') 
-                        };
-                        break;
-                    case "IMAGEMAP":
-                        if (content) msgToBot = JSON.parse(content);
-                        break;
-                    case "AUDIO":
-                        if (content && preview) msgToBot = { 
-                            type: "audio", 
-                            originalContentUrl: processUrl(content, 'AUDIO'), 
-                            duration: parseInt(preview) 
-                        };
-                        break;
-                    case "STICKER":
-                        if (content && preview) msgToBot = { type: "sticker", packageId: content, stickerId: preview };
-                        break;
-                    case "LOCATION":
-                        if (locName && address && latitude && longitude) msgToBot = { 
-                            type: "location", 
-                            title: locName, 
-                            address: address, 
-                            latitude: parseFloat(latitude), 
-                            longitude: parseFloat(longitude) 
-                        };
-                        break;
+                if (index === 0 && type === "TEXT") { // ข้อความ 1: Text
+                    if (content) msgToBot = { type: "text", text: content };
+                } else if (index === 1 && type === "IMAGE") { // ข้อความ 2: Image
+                    if (content && preview) msgToBot = { 
+                        type: "image", 
+                        originalContentUrl: processUrl(content, 'IMAGE'), 
+                        previewImageUrl: processUrl(preview, 'IMAGE') 
+                    };
                 }
                 if (Object.keys(msgToBot).length) messages.push(msgToBot);
             });
@@ -234,7 +104,7 @@
                 Swal.fire({
                     icon: 'warning',
                     title: 'กรุณากรอกข้อมูล',
-                    text: 'กรุณากรอกข้อมูลอย่างน้อย 1 ข้อความ',
+                    text: 'กรุณากรอกข้อมูลให้ครบทั้งข้อความและรูปภาพ',
                 });
                 return;
             }
@@ -248,34 +118,29 @@
                 }
             });
 
-            if (liff.isInClient()) {
-                liff.sendMessages(messages.slice(0, 5))
-                    .then(() => {
-                        Swal.fire({
-                            icon: 'success',
-                            title: 'สำเร็จ!',
-                            text: 'ส่งข้อความเรียบร้อยแล้ว',
-                            timer: 1500,
-                            showConfirmButton: false
-                        });
-                        form.reset();
-                        messageBlocks.querySelectorAll('.msg-type').forEach(updateFields);
-                    })
-                    .catch((error) => {
-                        Swal.fire({
-                            icon: 'error',
-                            title: 'เกิดข้อผิดพลาด',
-                            text: `ไม่สามารถส่งข้อความได้: ${error.message}`,
-                        });
-                        console.log('LIFF Send Error:', error);
+            const sendPromise = liff.isInClient() 
+                ? liff.sendMessages(messages.slice(0, 2))
+                : simulateSendMessages(messages.slice(0, 2));
+
+            sendPromise
+                .then(() => {
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'สำเร็จ!',
+                        text: liff.isInClient() ? 'ส่งข้อความเรียบร้อยแล้ว' : 'จำลองการส่งข้อความสำเร็จ',
+                        timer: 1500,
+                        showConfirmButton: false
                     });
-            } else {
-                Swal.fire({
-                    icon: 'warning',
-                    title: 'ไม่สามารถส่งได้',
-                    text: 'กรุณาเปิดใน LINE App เพื่อส่งข้อความ',
+                    form.reset();
+                })
+                .catch((error) => {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'เกิดข้อผิดพลาด',
+                        text: `ไม่สามารถส่งข้อความได้: ${error.message}`,
+                    });
+                    console.log('Send Error:', error);
                 });
-            }
         });
     </script>
 </body>
