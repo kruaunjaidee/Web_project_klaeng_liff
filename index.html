@@ -6,24 +6,90 @@
     <title>LIFF - ส่งข้อความ</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 </head>
 <body class="bg-gray-100 p-4">
     <div id="app" class="max-w-md mx-auto bg-white p-6 rounded-lg shadow-md">
-        <h1 class="text-xl font-bold mb-4 text-center">ส่งข้อความ</h1>
+        <h1 class="text-xl font-bold mb-4 text-center">ส่งข้อความ 5 ข้อความพร้อมกัน</h1>
         <div id="loading" class="text-center text-gray-600">กำลังโหลด LIFF...</div>
         <form id="messageForm" class="space-y-6 hidden">
-            <div>
-                <label class="block text-sm font-medium text-gray-700 mb-2">เลือกจำนวนข้อความ</label>
-                <select id="msgCount" class="w-full p-2 border rounded-md" onchange="adjustMessageBlocks()">
-                    <option value="1">1 ข้อความ</option>
-                    <option value="2">2 ข้อความ</option>
-                    <option value="3">3 ข้อความ</option>
-                    <option value="4">4 ข้อความ</option>
-                    <option value="5">5 ข้อความ</option>
-                </select>
+            <div id="messageBlocks">
+                <div class="border p-4 rounded-md message-block">
+                    <label class="block text-sm font-medium text-gray-700">ข้อความ 1</label>
+                    <select class="msg-type w-full p-2 border rounded-md mb-2" onchange="updateFields(this)">
+                        <option value="TEXT">ข้อความ (Text)</option>
+                        <option value="FLEX">Flex Message</option>
+                        <option value="VIDEO">วิดีโอ (Video)</option>
+                        <option value="TEMPLATE">เทมเพลต (Template)</option>
+                        <option value="IMAGE">รูปภาพ (Image)</option>
+                        <option value="IMAGEMAP">Imagemap</option>
+                        <option value="AUDIO">เสียง (Audio)</option>
+                        <option value="STICKER">สติกเกอร์ (Sticker)</option>
+                        <option value="LOCATION">ตำแหน่ง (Location)</option>
+                    </select>
+                    <div class="fields space-y-2"></div>
+                </div>
+                <div class="border p-4 rounded-md message-block">
+                    <label class="block text-sm font-medium text-gray-700">ข้อความ 2</label>
+                    <select class="msg-type w-full p-2 border rounded-md mb-2" onchange="updateFields(this)">
+                        <option value="TEXT">ข้อความ (Text)</option>
+                        <option value="FLEX">Flex Message</option>
+                        <option value="VIDEO">วิดีโอ (Video)</option>
+                        <option value="TEMPLATE">เทมเพลต (Template)</option>
+                        <option value="IMAGE">รูปภาพ (Image)</option>
+                        <option value="IMAGEMAP">Imagemap</option>
+                        <option value="AUDIO">เสียง (Audio)</option>
+                        <option value="STICKER">สติกเกอร์ (Sticker)</option>
+                        <option value="LOCATION">ตำแหน่ง (Location)</option>
+                    </select>
+                    <div class="fields space-y-2"></div>
+                </div>
+                <div class="border p-4 rounded-md message-block">
+                    <label class="block text-sm font-medium text-gray-700">ข้อความ 3</label>
+                    <select class="msg-type w-full p-2 border rounded-md mb-2" onchange="updateFields(this)">
+                        <option value="TEXT">ข้อความ (Text)</option>
+                        <option value="FLEX">Flex Message</option>
+                        <option value="VIDEO">วิดีโอ (Video)</option>
+                        <option value="TEMPLATE">เทมเพลต (Template)</option>
+                        <option value="IMAGE">รูปภาพ (Image)</option>
+                        <option value="IMAGEMAP">Imagemap</option>
+                        <option value="AUDIO">เสียง (Audio)</option>
+                        <option value="STICKER">สติกเกอร์ (Sticker)</option>
+                        <option value="LOCATION">ตำแหน่ง (Location)</option>
+                    </select>
+                    <div class="fields space-y-2"></div>
+                </div>
+                <div class="border p-4 rounded-md message-block">
+                    <label class="block text-sm font-medium text-gray-700">ข้อความ 4</label>
+                    <select class="msg-type w-full p-2 border rounded-md mb-2" onchange="updateFields(this)">
+                        <option value="TEXT">ข้อความ (Text)</option>
+                        <option value="FLEX">Flex Message</option>
+                        <option value="VIDEO">วิดีโอ (Video)</option>
+                        <option value="TEMPLATE">เทมเพลต (Template)</option>
+                        <option value="IMAGE">รูปภาพ (Image)</option>
+                        <option value="IMAGEMAP">Imagemap</option>
+                        <option value="AUDIO">เสียง (Audio)</option>
+                        <option value="STICKER">สติกเกอร์ (Sticker)</option>
+                        <option value="LOCATION">ตำแหน่ง (Location)</option>
+                    </select>
+                    <div class="fields space-y-2"></div>
+                </div>
+                <div class="border p-4 rounded-md message-block">
+                    <label class="block text-sm font-medium text-gray-700">ข้อความ 5</label>
+                    <select class="msg-type w-full p-2 border rounded-md mb-2" onchange="updateFields(this)">
+                        <option value="TEXT">ข้อความ (Text)</option>
+                        <option value="FLEX">Flex Message</option>
+                        <option value="VIDEO">วิดีโอ (Video)</option>
+                        <option value="TEMPLATE">เทมเพลต (Template)</option>
+                        <option value="IMAGE">รูปภาพ (Image)</option>
+                        <option value="IMAGEMAP">Imagemap</option>
+                        <option value="AUDIO">เสียง (Audio)</option>
+                        <option value="STICKER">สติกเกอร์ (Sticker)</option>
+                        <option value="LOCATION">ตำแหน่ง (Location)</option>
+                    </select>
+                    <div class="fields space-y-2"></div>
+                </div>
             </div>
-            <div id="messageBlocks" class="space-y-4"></div>
-            <button type="button" id="shareTargetPicker" class="w-full bg-yellow-500 text-white p-2 rounded-md hover:bg-yellow-600 mb-2">เลือกไฟล์จาก Share Target</button>
             <button type="submit" class="w-full bg-blue-500 text-white p-2 rounded-md hover:bg-blue-600">ส่งข้อความ</button>
         </form>
         <p id="status" class="mt-4 text-center text-gray-600"></p>
@@ -35,7 +101,6 @@
         const form = document.getElementById('messageForm');
         const status = document.getElementById('status');
         const messageBlocks = document.getElementById('messageBlocks');
-        let currentBlockIndex = 0;
 
         // เริ่มต้น LIFF
         liff.init({
@@ -44,14 +109,13 @@
         .then(() => {
             loading.classList.add('hidden');
             form.classList.remove('hidden');
-            adjustMessageBlocks(); // โหลดช่องเริ่มต้น
+            messageBlocks.querySelectorAll('.msg-type').forEach(updateFields);
             status.textContent = liff.isInClient() ? 'พร้อมใช้งานใน LINE App' : 'เปิดในเบราว์เซอร์ (ส่งข้อความได้เฉพาะใน LINE App)';
         })
         .catch((err) => {
             loading.classList.add('hidden');
             status.textContent = `เกิดข้อผิดพลาดในการโหลด LIFF: ${err.code} - ${err.message}`;
             console.log('LIFF Error:', err.code, err.message);
-            form.classList.remove('hidden');
         });
 
         function updateFields(select) {
@@ -91,94 +155,15 @@
             }
         }
 
-        // ฟังก์ชันปรับจำนวนช่อง Message Block
-        function adjustMessageBlocks() {
-            const desiredCount = parseInt(document.getElementById('msgCount').value);
-            const currentCount = messageBlocks.children.length;
-
-            // ลบช่องเกิน
-            while (currentCount > desiredCount) {
-                messageBlocks.removeChild(messageBlocks.lastChild);
-            }
-
-            // เพิ่มช่องใหม่ให้ครบ
-            while (currentCount < desiredCount) {
-                const newBlock = document.createElement('div');
-                newBlock.className = 'border p-4 rounded-md message-block';
-                newBlock.innerHTML = `
-                    <label class="block text-sm font-medium text-gray-700">ข้อความ ${currentCount + 1}</label>
-                    <select class="msg-type w-full p-2 border rounded-md mb-2" onchange="updateFields(this)">
-                        <option value="TEXT">ข้อความ (Text)</option>
-                        <option value="FLEX">Flex Message</option>
-                        <option value="VIDEO">วิดีโอ (Video)</option>
-                        <option value="TEMPLATE">เทมเพลต (Template)</option>
-                        <option value="IMAGE">รูปภาพ (Image)</option>
-                        <option value="IMAGEMAP">Imagemap</option>
-                        <option value="AUDIO">เสียง (Audio)</option>
-                        <option value="STICKER">สติกเกอร์ (Sticker)</option>
-                        <option value="LOCATION">ตำแหน่ง (Location)</option>
-                    </select>
-                    <div class="fields space-y-2"></div>
-                `;
-                messageBlocks.appendChild(newBlock);
-                updateFields(newBlock.querySelector('.msg-type'));
-            }
-        }
-
-        // ฟังก์ชันดึง File ID จาก Google Drive URL
-        function extractFileId(url) {
-            const match = url.match(/\/d\/([a-zA-Z0-9_-]+)/);
-            return match ? match[1] : null;
-        }
-
-        // ฟังก์ชันตรวจสอบและแปลง URL
         function processUrl(input, type) {
             if (!input) return '';
             if (input.includes('drive.google.com')) {
-                const fileId = extractFileId(input);
+                const match = input.match(/\/d\/([a-zA-Z0-9_-]+)/);
+                const fileId = match ? match[1] : null;
                 return fileId ? `https://lh3.googleusercontent.com/d/${fileId}` : input;
             }
             return input;
         }
-
-        // Share Target Picker
-        document.getElementById('shareTargetPicker').addEventListener('click', () => {
-            if (!liff.isInClient()) {
-                status.textContent = "Share Target Picker ใช้ได้เฉพาะใน LINE App";
-                return;
-            }
-
-            liff.shareTargetPicker([
-                { type: "text", text: "เลือกไฟล์จาก Google Drive หรือ URL เพื่อใส่ในช่องข้อความ" }
-            ])
-            .then((result) => {
-                if (result) {
-                    const sharedText = result[0]?.text || '';
-                    const fileId = extractFileId(sharedText) || sharedText;
-                    if (fileId) {
-                        const blocks = messageBlocks.querySelectorAll('.message-block');
-                        const currentBlock = blocks[currentBlockIndex];
-                        const type = currentBlock.querySelector('.msg-type').value;
-
-                        if (['VIDEO', 'IMAGE', 'AUDIO'].includes(type)) {
-                            const contentField = currentBlock.querySelector('.content');
-                            contentField.value = fileId;
-                            status.textContent = `ใส่ข้อมูล: ${fileId} ในข้อความ ${currentBlockIndex + 1}`;
-                        } else {
-                            status.textContent = "กรุณาเลือกประเภท VIDEO, IMAGE หรือ AUDIO ก่อนใช้ Share Target";
-                        }
-
-                        currentBlockIndex = (currentBlockIndex + 1) % blocks.length;
-                    } else {
-                        status.textContent = "ไม่พบ File ID หรือ URL ที่ถูกต้องในลิงก์ที่แชร์";
-                    }
-                }
-            })
-            .catch((error) => {
-                status.textContent = "เกิดข้อผิดพลาดใน Share Target Picker: " + error.message;
-                console.log('Share Target Error:', error);
-            });
-        });
 
         form.addEventListener('submit', function(e) {
             e.preventDefault();
@@ -246,25 +231,50 @@
             });
 
             if (messages.length === 0) {
-                status.textContent = "กรุณากรอกข้อมูลอย่างน้อย 1 ข้อความ";
+                Swal.fire({
+                    icon: 'warning',
+                    title: 'กรุณากรอกข้อมูล',
+                    text: 'กรุณากรอกข้อมูลอย่างน้อย 1 ข้อความ',
+                });
                 return;
             }
 
-            status.textContent = "กำลังส่ง...";
+            Swal.fire({
+                title: 'กำลังส่งข้อความ...',
+                text: 'กรุณารอสักครู่',
+                allowOutsideClick: false,
+                didOpen: () => {
+                    Swal.showLoading();
+                }
+            });
 
             if (liff.isInClient()) {
-                liff.sendMessages(messages)
+                liff.sendMessages(messages.slice(0, 5))
                     .then(() => {
-                        status.textContent = "ส่งข้อความสำเร็จ";
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'สำเร็จ!',
+                            text: 'ส่งข้อความเรียบร้อยแล้ว',
+                            timer: 1500,
+                            showConfirmButton: false
+                        });
                         form.reset();
-                        adjustMessageBlocks();
+                        messageBlocks.querySelectorAll('.msg-type').forEach(updateFields);
                     })
                     .catch((error) => {
-                        status.textContent = "เกิดข้อผิดพลาดในการส่งข้อความ: " + error.message;
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'เกิดข้อผิดพลาด',
+                            text: `ไม่สามารถส่งข้อความได้: ${error.message}`,
+                        });
                         console.log('LIFF Send Error:', error);
                     });
             } else {
-                status.textContent = "ส่งข้อความได้เฉพาะใน LINE App เท่านั้น";
+                Swal.fire({
+                    icon: 'warning',
+                    title: 'ไม่สามารถส่งได้',
+                    text: 'กรุณาเปิดใน LINE App เพื่อส่งข้อความ',
+                });
             }
         });
     </script>
